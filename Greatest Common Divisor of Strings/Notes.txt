@@ -1,0 +1,60 @@
+package main
+
+import (
+	"fmt"
+)
+
+// Function to compute GCD of two numbers
+func gcd(a, b int) int {
+	if b == 0 {
+		return a
+	}
+	return gcd(b, a%b)
+}
+
+// Function to check if str can be formed by repeating base
+func canFormByRepeating(str, base string) bool {
+	// If the length of str is not a multiple of base's length, return false
+	if len(str)%len(base) != 0 {
+		return false
+	}
+	
+	// Repeat base to form a new string of the same length as str
+	repeated := ""
+	for i := 0; i < len(str)/len(base); i++ {
+		repeated += base
+	}
+	
+	// Compare the constructed string with the original string
+	return repeated == str
+}
+
+// Function to find the largest common divisor string
+func gcdOfStrings(str1, str2 string) string {
+	// Calculate the GCD of the lengths of the two strings
+	gcdLength := gcd(len(str1), len(str2))
+
+	// Extract the potential divisor string
+	potentialDivisor := str1[:gcdLength]
+
+	// Check if this string can divide both str1 and str2
+	if canFormByRepeating(str1, potentialDivisor) && canFormByRepeating(str2, potentialDivisor) {
+		return potentialDivisor
+	}
+	return ""
+}
+
+// Main function
+func main() {
+	str1 := "ABCABC"
+	str2 := "ABC"
+	fmt.Println("Result:", gcdOfStrings(str1, str2)) // Output: "ABC"
+
+	str1 = "ABABAB"
+	str2 = "ABAB"
+	fmt.Println("Result:", gcdOfStrings(str1, str2)) // Output: "AB"
+
+	str1 = "LEET"
+	str2 = "CODE"
+	fmt.Println("Result:", gcdOfStrings(str1, str2)) // Output: ""
+}

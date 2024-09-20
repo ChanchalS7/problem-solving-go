@@ -1,0 +1,282 @@
+package main
+
+import (
+	"fmt"
+)
+
+// isSubsequence checks if s is a subsequence of t.
+func isSubsequence(s string, t string) bool {
+    // Initialize two pointers
+    sPointer, tPointer := 0, 0
+
+    // Loop through string t
+    for tPointer < len(t) {
+        // If characters match, move the pointer for s
+        if sPointer < len(s) && s[sPointer] == t[tPointer] {
+            sPointer++
+        }
+        // Always move the pointer for t
+        tPointer++
+    }
+    
+    // If we have traversed all characters in s, it is a subsequence
+    return sPointer == len(s)
+}
+
+// Main function
+func main() {
+    // Test cases
+    fmt.Println(isSubsequence("abc", "ahbgdc")) // Output: true
+    fmt.Println(isSubsequence("axc", "ahbgdc")) // Output: false
+    fmt.Println(isSubsequence("", "ahbgdc"))    // Output: true (empty string is a subsequence of any string)
+    fmt.Println(isSubsequence("abc", ""))       // Output: false (non-empty string can't be a subsequence of an empty string)
+}
+
+
+Explanation of the Code
+Function Signature:
+
+go
+Copy code
+func isSubsequence(s string, t string) bool {
+This function takes two strings, s and t, and returns a boolean indicating whether s is a subsequence of t.
+Pointer Initialization:
+
+go
+Copy code
+sPointer, tPointer := 0, 0
+We initialize two pointers: sPointer for string s and tPointer for string t. Both start at 0.
+Loop Through t:
+
+go
+Copy code
+for tPointer < len(t) {
+We loop through the string t until tPointer reaches the length of t.
+Check for Matches:
+
+go
+Copy code
+if sPointer < len(s) && s[sPointer] == t[tPointer] {
+    sPointer++
+}
+If the current characters pointed to by sPointer in s and tPointer in t match, we increment the sPointer. This indicates we found a character from s in t.
+Always Increment tPointer:
+
+go
+Copy code
+tPointer++
+Regardless of whether there was a match, we always move the tPointer to check the next character in t.
+Final Check:
+
+go
+Copy code
+return sPointer == len(s)
+After the loop, if sPointer has reached the end of s, it means all characters of s were found in t in the correct order, so we return true. Otherwise, we return false.
+Example Walkthrough
+Let’s go through the first example step-by-step:
+
+Input: s = "abc", t = "ahbgdc"
+Pointers: Initially, both sPointer and tPointer are at 0.
+First Iteration:
+
+sPointer points to 'a', tPointer points to 'a' (match).
+Increment sPointer to 1.
+Second Iteration:
+
+sPointer points to 'b', tPointer points to 'h' (no match).
+Increment tPointer to 2.
+Third Iteration:
+
+sPointer points to 'b', tPointer points to 'b' (match).
+Increment sPointer to 2.
+Fourth Iteration:
+
+sPointer points to 'c', tPointer points to 'g' (no match).
+Increment tPointer to 4.
+Fifth Iteration:
+
+sPointer points to 'c', tPointer points to 'd' (no match).
+Increment tPointer to 5.
+Sixth Iteration:
+
+sPointer points to 'c', tPointer points to 'c' (match).
+Increment sPointer to 3.
+At the end of the loop, sPointer equals the length of s, so the function returns true.
+Complexity Analysis
+Time Complexity: 
+𝑂
+(
+𝑛
+)
+O(n), where 
+𝑛
+n is the length of t. We traverse t at most once.
+Space Complexity: 
+𝑂
+(
+1
+)
+O(1), since we are using only a constant amount of extra space for pointers.
+Feel free to ask if you have more questions or need further explanations!
+
+
+ Recursive Approach
+This method checks each character of s against t recursively.
+package main
+
+import (
+	"fmt"
+)
+
+// Recursive function to check if s is a subsequence of t
+func isSubsequenceRecursive(s string, t string, sIndex int, tIndex int) bool {
+	// If we've reached the end of s, it means we've found all characters
+	if sIndex == len(s) {
+		return true
+	}
+	// If we've reached the end of t but not s, then s is not a subsequence
+	if tIndex == len(t) {
+		return false
+	}
+
+	// If characters match, move both indices
+	if s[sIndex] == t[tIndex] {
+		return isSubsequenceRecursive(s, t, sIndex+1, tIndex+1)
+	}
+	// If they don't match, only move the index for t
+	return isSubsequenceRecursive(s, t, sIndex, tIndex+1)
+}
+
+// Wrapper function
+func isSubsequence(s string, t string) bool {
+	return isSubsequenceRecursive(s, t, 0, 0)
+}
+
+// Main function
+func main() {
+	fmt.Println(isSubsequence("abc", "ahbgdc")) // Output: true
+	fmt.Println(isSubsequence("axc", "ahbgdc")) // Output: false
+	fmt.Println(isSubsequence("", "ahbgdc"))    // Output: true
+	fmt.Println(isSubsequence("abc", ""))       // Output: false
+}
+
+xplanation
+Base Cases:
+
+If sIndex reaches the length of s, it means all characters have been matched, so return true.
+If tIndex reaches the length of t but s has not been completely matched, return false.
+Recursive Checks:
+
+If the characters at the current indices match, move both indices forward.
+If they don’t match, move only the index of t forward to check the next character in t.
+Complexity
+Time Complexity: 
+𝑂
+(
+𝑚
++
+𝑛
+)
+O(m+n), where 
+𝑚
+m is the length of s and 
+𝑛
+n is the length of t, due to the depth of recursion.
+Space Complexity: 
+𝑂
+(
+𝑚
+)
+O(m) due to the recursive call stack
+
+
+
+
+Hash Map Approach
+This approach builds a hash map of the indices of characters in t, allowing us to quickly find the next occurrence of each character in s.
+
+package main
+
+import (
+	"fmt"
+)
+
+// isSubsequenceHash checks if s is a subsequence of t using a hash map.
+func isSubsequenceHash(s string, t string) bool {
+	if len(s) == 0 {
+		return true // An empty string is always a subsequence
+	}
+	if len(t) == 0 {
+		return false // A non-empty string cannot be a subsequence of an empty string
+	}
+
+	// Create a map to store the indices of characters in t
+	indexMap := make(map[byte][]int)
+	for i := range t {
+		indexMap[t[i]] = append(indexMap[t[i]], i)
+	}
+
+	// Current position in t
+	currentPos := -1
+
+	// Check each character in s
+	for i := range s {
+		if indices, found := indexMap[s[i]]; found {
+			// Find the next occurrence of s[i] that is greater than currentPos
+			nextPos := -1
+			for _, idx := range indices {
+				if idx > currentPos {
+					nextPos = idx
+					break
+				}
+			}
+			if nextPos == -1 {
+				return false // No valid next position found
+			}
+			currentPos = nextPos
+		} else {
+			return false // Character from s not found in t
+		}
+	}
+
+	return true
+}
+
+// Main function
+func main() {
+	fmt.Println(isSubsequenceHash("abc", "ahbgdc")) // Output: true
+	fmt.Println(isSubsequenceHash("axc", "ahbgdc")) // Output: false
+	fmt.Println(isSubsequenceHash("", "ahbgdc"))    // Output: true
+	fmt.Println(isSubsequenceHash("abc", ""))       // Output: false
+}
+
+
+Explanation
+Index Mapping:
+
+A hash map is created to store the indices of each character in t. This allows for quick lookup of where each character in s can be found.
+Finding Subsequences:
+
+For each character in s, check if it exists in the map. If it does, find the next occurrence in t that comes after the last matched character.
+Checking Validity:
+
+If you cannot find the next position for any character in s, return false.
+Complexity
+Time Complexity: 
+𝑂
+(
+𝑚
++
+𝑛
+)
+O(m+n), where 
+𝑚
+m is the length of s and 
+𝑛
+n is the length of t (mapping and searching).
+Space Complexity: 
+𝑂
+(
+𝑛
+)
+O(n) for storing the indices in the hash map.

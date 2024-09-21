@@ -1,0 +1,22 @@
+func kidsWithCandies(candies []int, extraCandies int) []bool{
+    max:=0
+
+    //create slice to store bool ans
+    res:= make([]bool, len(candies))
+    //find the maximum number of candies any kid has
+    for _,i:= range candies {
+        if i > max {
+            max = i 
+        }
+    }
+
+    //Determine if each kid can have the maximum or more candies 
+    for j, i := range candies {
+        if i+ extraCandies >= max {
+            res[j]=true
+        }else{
+            res[j]=fasle
+        }
+    }
+    return res 
+}
